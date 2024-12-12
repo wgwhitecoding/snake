@@ -9,6 +9,7 @@ const ctx = canvas.getContext('2d');
 // Canvas dimensions
 canvas.width = 800;
 canvas.height = 600;
+adjustCanvasHeight(); // Adjust canvas height on load
 
 // Grid size
 const GRID_SIZE = 20;
@@ -27,6 +28,7 @@ let specialFood = null;
 let specialFoodTimer = null;
 let snakeSkin = "default";
 let highScore = 0;
+let isPaused = false; // Pause state
 
 // DOM elements
 const scoreDisplay = document.getElementById("scoreDisplay");
@@ -38,6 +40,7 @@ const gameOverModal = document.getElementById("gameOverModal");
 const remainingLives = document.getElementById("remainingLives");
 const resumeButton = document.getElementById("resumeButton");
 const restartButton = document.getElementById("restartButton");
+const pausePlayButton = document.getElementById("pausePlayButton"); // Pause/Play button
 
 // State to track modal visibility
 let isModalOpen = false;
@@ -83,6 +86,23 @@ function startSpecialFoodTimer() {
   }, 6000);
 }
 
+function announceLevel(level) {
+  const levelAnnouncement = document.createElement("div");
+  levelAnnouncement.textContent = `Level ${level}!`;
+  levelAnnouncement.style = `
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4em;
+    color: #FFD700;
+    text-shadow: 0 0 20px #FFD700;
+    animation: flash 1.5s ease-in-out 3;
+  `;
+  document.body.appendChild(levelAnnouncement);
+  setTimeout(() => levelAnnouncement.remove(), 3000);
+}
+
 /**
  * CORE GAME LOGIC
  * - Game loop
@@ -91,12 +111,14 @@ function startSpecialFoodTimer() {
  * - Level progression
  */
 function gameLoop() {
-  if (!isModalOpen) {
+  if (!isModalOpen && !isPaused) {
     setTimeout(() => {
       update();
       draw();
       if (lives > 0) gameLoop();
     }, speed);
+  } else if (isPaused) {
+    drawPaused(); // Show paused screen
   }
 }
 
@@ -162,6 +184,8 @@ function levelUp() {
   level++;
   speed = Math.max(50, speed - 10); // Increase speed
 
+  announceLevel(level); // Announce the new level
+
   // Add obstacles starting at level 3 and every 3 levels afterward
   if (level >= 3 && level % 3 === 0) {
     generateObstacles(5); // Add 5 obstacles per interval
@@ -209,6 +233,7 @@ restartButton.addEventListener("click", () => {
   updateLivesDisplay();
   gameOverModal.style.display = "none";
   isModalOpen = false;
+  isPaused = false; // Ensure game is not paused
   gameLoop();
 });
 
@@ -266,6 +291,18 @@ function draw() {
 }
 
 /**
+ * PAUSED SCREEN DRAWING
+ */
+function drawPaused() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.7)"; // Dim the background
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#FFD700"; // Retro-style yellow text
+  ctx.font = "bold 48px 'Press Start 2P', sans-serif"; // Retro font
+  ctx.textAlign = "center";
+  ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
+}
+
+/**
  * EVENT LISTENERS
  * - Handle keyboard input for snake movement
  */
@@ -283,8 +320,79 @@ document.addEventListener("keydown", event => {
     case "ArrowRight":
       if (direction.x === 0) nextDirection = { x: 1, y: 0 };
       break;
+    case " ":
+      // Spacebar to toggle pause/play
+      if (isPaused) {
+        isPaused = false;
+        pausePlayButton.textContent = "Pause";
+        gameLoop();
+      } else {
+        isPaused = true;
+        pausePlayButton.textContent = "Play";
+      }
+      break;
   }
 });
+
+/**
+ * TOUCH CONTROLS FOR MOBILE DEVICES
+ */
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener("touchstart", event => {
+  const touch = event.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+});
+
+document.addEventListener("touchmove", event => {
+  if (event.touches.length > 1) return; // Ignore multi-touch
+  const touch = event.touches[0];
+  const dx = touch.clientX - touchStartX;
+  const dy = touch.clientY - touchStartY;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    // Horizontal swipe
+    if (dx > 0 && direction.x === 0) nextDirection = { x: 1, y: 0 }; // Right
+    if (dx < 0 && direction.x === 0) nextDirection = { x: -1, y: 0 }; // Left
+  } else {
+    // Vertical swipe
+    if (dy > 0 && direction.y === 0) nextDirection = { x: 0, y: 1 }; // Down
+    if (dy < 0 && direction.y === 0) nextDirection = { x: 0, y: -1 }; // Up
+  }
+
+  touchStartX = touch.clientX; // Reset for next swipe
+  touchStartY = touch.clientY;
+});
+
+/**
+ * PAUSE/PLAY LOGIC
+ */
+pausePlayButton.addEventListener("click", () => {
+  if (isPaused) {
+    isPaused = false; // Resume the game
+    pausePlayButton.textContent = "Pause"; // Change button to Pause
+    gameLoop();
+  } else {
+    isPaused = true; // Pause the game
+    pausePlayButton.textContent = "Play"; // Change button to Play
+  }
+});
+
+/**
+ * DYNAMIC CANVAS HEIGHT FOR SMALL SCREENS
+ */
+function adjustCanvasHeight() {
+  if (window.innerWidth <= 768) {
+    canvas.height = window.innerHeight * 1.2; // Set to 90% of viewport height
+  } else {
+    canvas.height = 600; // Default height for larger screens
+  }
+}
+
+// Adjust canvas height on window resize
+window.addEventListener("resize", adjustCanvasHeight);
 
 /**
  * START GAME
@@ -293,6 +401,9 @@ document.addEventListener("keydown", event => {
 resetSnake();
 updateLivesDisplay();
 gameLoop();
+
+
+
 
 
 
