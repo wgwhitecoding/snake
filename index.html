@@ -8,10 +8,10 @@
 </head>
 <body>
     <h1>Futuristic Snake Game</h1>
-    <p>Control the snake with the arrow keys. Reach level 20 and beat the high score!</p>
+    <p>Control the snake with the arrow keys. Earn 1000 points per level!</p>
     <div class="stats">
         <span id="scoreDisplay">Score: 0</span>
-        <span id="levelDisplay">Level: 1</span>
+        <span id="levelDisplay" class="flashing">Level: 1</span>
         <span id="livesDisplay">Lives: ❤️❤️❤️</span>
         <span id="highScoreDisplay">High Score: 0</span>
     </div>
@@ -19,11 +19,20 @@
         <canvas id="gameCanvas"></canvas>
     </div>
 
-    <!-- Modal for Lives/Game Over -->
-    <div id="modal" class="modal">
+    <!-- Modal for Losing Life -->
+    <div id="lifeModal" class="modal">
         <div class="modal-content">
-            <h2 id="modalTitle"></h2>
-            <p id="livesLeft">Lives: ❤️❤️❤️</p>
+            <h2 id="lifeModalTitle">Oh no! You lost a life!</h2>
+            <p id="remainingLives">Lives: ❤️❤️❤️</p>
+            <button id="resumeButton">Resume Game</button>
+        </div>
+    </div>
+
+    <!-- Modal for Game Over -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2 id="gameOverTitle">Game Over!</h2>
+            <p id="finalLives">Lives: 💔💔💔</p>
             <button id="restartButton">Restart Game</button>
         </div>
     </div>
@@ -31,4 +40,6 @@
     <script src="assets/js/script.js"></script>
 </body>
 </html>
+
+
 

@@ -86,3 +86,33 @@ canvas {
     background-color: #2bc110;
 }
 
+/* Flashing Level Display */
+#levelAnnouncement {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4em;
+    color: #ff4500;
+    text-shadow: 0 0 20px #ff4500;
+    display: none;
+    animation: flash 1.5s ease-in-out 3;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+}
+/* Flashing Snake during Grace Period */
+.snake-flash {
+    animation: snakeFlash 0.5s ease-in-out infinite;
+}
+
+@keyframes snakeFlash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+
+
+
