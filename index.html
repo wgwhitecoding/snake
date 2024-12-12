@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Snake Game</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <h1>Futuristic Snake Game</h1>
+    <p>Control the snake with the arrow keys. Reach level 20 and beat the high score!</p>
+    <div class="stats">
+        <span id="scoreDisplay">Score: 0</span>
+        <span id="levelDisplay">Level: 1</span>
+        <span id="livesDisplay">Lives: ❤️❤️❤️</span>
+        <span id="highScoreDisplay">High Score: 0</span>
+    </div>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <!-- Modal for Lives/Game Over -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle"></h2>
+            <p id="livesLeft">Lives: ❤️❤️❤️</p>
+            <button id="restartButton">Restart Game</button>
+        </div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
+
