@@ -12,6 +12,7 @@ const gridSize = 20;
 // Snake settings
 let snake = [{ x: 300, y: 300 }];
 let direction = { x: 0, y: 0 };
+let nextDirection = { x: 0, y: 0 }; // To handle new direction changes
 let food = { x: gridSize * Math.floor(Math.random() * (canvas.width / gridSize)), y: gridSize * Math.floor(Math.random() * (canvas.height / gridSize)) };
 let score = 0;
 let level = 1;
@@ -46,6 +47,9 @@ function gameLoop() {
 
 // Update game state
 function update() {
+    // Update direction before moving the snake
+    direction = { ...nextDirection };
+
     moveSnake();
 
     // Check if the snake eats the food
@@ -167,6 +171,7 @@ restartButton.addEventListener("click", () => {
     speed = 150;
     snake = [{ x: 300, y: 300 }];
     direction = { x: 0, y: 0 };
+    nextDirection = { x: 0, y: 0 };
     updateLivesDisplay();
     gameOverModal.style.display = "none";
     isModalOpen = false;
@@ -177,16 +182,16 @@ restartButton.addEventListener("click", () => {
 document.addEventListener("keydown", event => {
     switch (event.key) {
         case "ArrowUp":
-            if (direction.y === 0) direction = { x: 0, y: -1 };
+            if (direction.y === 0) nextDirection = { x: 0, y: -1 };
             break;
         case "ArrowDown":
-            if (direction.y === 0) direction = { x: 0, y: 1 };
+            if (direction.y === 0) nextDirection = { x: 0, y: 1 };
             break;
         case "ArrowLeft":
-            if (direction.x === 0) direction = { x: -1, y: 0 };
+            if (direction.x === 0) nextDirection = { x: -1, y: 0 };
             break;
         case "ArrowRight":
-            if (direction.x === 0) direction = { x: 1, y: 0 };
+            if (direction.x === 0) nextDirection = { x: 1, y: 0 };
             break;
     }
 });
@@ -194,6 +199,7 @@ document.addEventListener("keydown", event => {
 // Start the game
 updateLivesDisplay();
 gameLoop();
+
 
 
 
