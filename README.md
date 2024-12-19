@@ -1,7 +1,6 @@
-![Futuristic Glow Snake Game](assets/images/snake.png)
-
-
 # Futuristic Glow Snake Game
+
+![Futuristic Glow Snake Game](assets/images/snake.png)
 
 A modern twist on the classic Snake game, set in a retro-futuristic world of neon lights and glowing grids. Collect food, gain points, level up, dodge obstacles, and see if you can beat your own high score!
 
