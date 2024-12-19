@@ -5,6 +5,7 @@
 A modern twist on the classic Snake game, set in a retro-futuristic world of neon lights and glowing grids. Collect food, gain points, level up, dodge obstacles, and see if you can beat your own high score!
 
 **Repository:** [https://github.com/wgwhitecoding/snake](https://github.com/wgwhitecoding/snake)
+**Live Link** [CodeQuest CodingGame Live](https://wgwhitecoding.github.io/snake/)
 
 ---
 
@@ -16,8 +17,11 @@ A modern twist on the classic Snake game, set in a retro-futuristic world of neo
 - [Game Mechanics](#game-mechanics)
 - [Installation & Setup](#installation--setup)
 - [Folder Structure](#folder-structure)
+- [Technology Used](#technology-used)
 - [Future Enhancements](#future-enhancements)
 - [Contributing](#contributing)
+- [Author](#author)
+- [🤝 Connect with Me](#connect-with-me)
 
 ---
 
@@ -84,6 +88,31 @@ A modern twist on the classic Snake game, set in a retro-futuristic world of neo
 ## Folder Structure
 ![File structure](assets/images/File-Structure.png)
 
+## Technology Used
+
+### Frontend Technologies
+
+- [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)  
+  **HTML5**: For building the structure of the game and rendering the canvas.
+
+- [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)  
+  **CSS3**: For styling the game interface, modals, and animations.
+
+- [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)  
+  **JavaScript**: Core game logic, including snake movement, collision detection, level progression, and user feedback.
+
+---
+
+### Tools and Libraries
+
+- [![Google Fonts](https://img.shields.io/badge/Google%20Fonts-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://fonts.google.com/)  
+  **Google Fonts**: "Press Start 2P" font for a retro gaming feel.
+
+- [![Shield.io](https://img.shields.io/badge/Shields.io-000000?style=for-the-badge&logo=shields.io&logoColor=white)](https://shields.io/)  
+  **Shields.io**: For creating stylish badges used in the documentation.
+
+
+
 ## Future Enhancements
 
 - **More Obstacles & Power-Ups:** Introduce new types of obstacles or power-ups that could affect snake speed or grant invincibility.
@@ -107,3 +136,21 @@ i encourage contributions that improve gameplay, visuals, performance, or code q
 
 
 **Get ready to navigate the glowing grid—good luck achieving the highest score!**
+
+## Author
+**Created by:** [Walid Will Gailey White](https://github.com/wgwhitecoding)
+
+If you have any questions, feel free to reach out via GitHub or open an issue in the repository.
+
+---
+
+## 🤝 Connect with Me <a id="connect-with-me"></a>
+
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/wgwhitecoding)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/walidwillwhite/)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:walidwillwhite@gmail.com)
+
+
+---
+
+⭐️ Thanks for visiting! Feel free to explore my repositories and star any that interest you. 😊
