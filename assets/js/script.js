@@ -1,8 +1,6 @@
-// Full implementation of the enhanced Snake game with requested features and fixes.
-
-/**
- * GAME CONSTANTS AND INITIAL SETUP
- */
+// =======================================
+// ************ GAME CONSTANTS ************
+// =======================================
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -14,7 +12,7 @@ adjustCanvasHeight(); // Adjust canvas height on load
 // Grid size
 const GRID_SIZE = 20;
 
-// Game states
+// Game state variables
 let snake = [{ x: 300, y: 300 }];
 let direction = { x: 0, y: 0 };
 let nextDirection = { x: 0, y: 0 };
@@ -28,7 +26,9 @@ let specialFood = null;
 let specialFoodTimer = null;
 let snakeSkin = "default";
 let highScore = 0;
-let isPaused = false; // Pause state
+let isPaused = false; 
+let isModalOpen = false; 
+let justRespawned = false; // NEW FLAG
 
 // DOM elements
 const scoreDisplay = document.getElementById("scoreDisplay");
@@ -40,17 +40,14 @@ const gameOverModal = document.getElementById("gameOverModal");
 const remainingLives = document.getElementById("remainingLives");
 const resumeButton = document.getElementById("resumeButton");
 const restartButton = document.getElementById("restartButton");
-const pausePlayButton = document.getElementById("pausePlayButton"); // Pause/Play button
+const pausePlayButton = document.getElementById("pausePlayButton");
 
-// State to track modal visibility
-let isModalOpen = false;
+// Initial UI updates
+updateLivesDisplay();
 
-/**
- * UTILITY FUNCTIONS
- * - Random coordinate generator
- * - Screen wrapping logic
- * - Obstacle and special food generation
- */
+// =======================================
+// ************ UTILITY FUNCTIONS *********
+// =======================================
 function randomCoord(max) {
   return GRID_SIZE * Math.floor(Math.random() * (max / GRID_SIZE));
 }
@@ -74,7 +71,7 @@ function generateSpecialFood() {
   specialFood = {
     x: randomCoord(canvas.width),
     y: randomCoord(canvas.height),
-    color: "#39FF14", // Neon green color for visibility
+    color: "#39FF14",
   };
   startSpecialFoodTimer();
 }
@@ -82,7 +79,7 @@ function generateSpecialFood() {
 function startSpecialFoodTimer() {
   if (specialFoodTimer) clearTimeout(specialFoodTimer);
   specialFoodTimer = setTimeout(() => {
-    specialFood = null; // Remove special food after 6 seconds
+    specialFood = null;
   }, 6000);
 }
 
@@ -103,33 +100,41 @@ function announceLevel(level) {
   setTimeout(() => levelAnnouncement.remove(), 3000);
 }
 
-/**
- * CORE GAME LOGIC
- * - Game loop
- * - Update and movement logic
- * - Collision detection
- * - Level progression
- */
+// =======================================
+// ************* CORE GAME LOGIC **********
+// =======================================
 function gameLoop() {
-  if (!isModalOpen && !isPaused) {
+  if (!isModalOpen && !isPaused && lives > 0) {
     setTimeout(() => {
       update();
       draw();
-      if (lives > 0) gameLoop();
+      gameLoop();
     }, speed);
   } else if (isPaused) {
-    drawPaused(); // Show paused screen
+    drawPaused();
   }
 }
 
 function update() {
-  // Update direction before moving the snake
+  // If we just respawned, skip collision checks once
+  if (justRespawned) {
+    justRespawned = false;
+    // Skip movement/collision checks this frame
+    return;
+  }
+
   direction = { ...nextDirection };
+
+  // If direction is (0,0), no movement or collision checks occur.
+  if (direction.x === 0 && direction.y === 0) {
+    return;
+  }
 
   moveSnake();
 
-  // Check if the snake eats the food
   const head = snake[0];
+
+  // Check if snake eats normal food
   if (head.x === food.x && head.y === food.y) {
     score += 100;
     if (score >= 1000 * level) {
@@ -137,38 +142,26 @@ function update() {
     }
     food = { x: randomCoord(canvas.width), y: randomCoord(canvas.height) };
   } else {
-    snake.pop(); // Remove the tail
+    snake.pop();
   }
 
-  // Check if the snake eats special food
+  // Check if snake eats special food
   if (specialFood && head.x === specialFood.x && head.y === specialFood.y) {
-    score += 500; // Extra points for special food
-    specialFood = null; // Remove special food
-    clearTimeout(specialFoodTimer); // Clear timer if eaten
+    score += 500; 
+    specialFood = null; 
+    clearTimeout(specialFoodTimer); 
   }
 
-  // Check for collisions with itself
+  // Collision with itself
   if (snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)) {
-    lives--; // Decrease lives
-    updateLivesDisplay();
-
-    if (lives > 0) {
-      showLifeModal();
-    } else {
-      showGameOverModal();
-    }
+    handleLifeLoss();
+    return; 
   }
 
-  // Check for collisions with obstacles
+  // Collision with obstacles
   if (obstacles.some(obstacle => obstacle.x === head.x && obstacle.y === head.y)) {
-    lives--;
-    updateLivesDisplay();
-
-    if (lives > 0) {
-      showLifeModal();
-    } else {
-      showGameOverModal();
-    }
+    handleLifeLoss();
+    return; 
   }
 }
 
@@ -182,37 +175,71 @@ function moveSnake() {
 
 function levelUp() {
   level++;
-  speed = Math.max(50, speed - 10); // Increase speed
+  speed = Math.max(50, speed - 10);
+  announceLevel(level);
 
-  announceLevel(level); // Announce the new level
-
-  // Add obstacles starting at level 3 and every 3 levels afterward
   if (level >= 3 && level % 3 === 0) {
-    generateObstacles(5); // Add 5 obstacles per interval
+    generateObstacles(5);
   }
 
-  // Add special food starting at level 2
   if (level >= 2 && !specialFood) {
     generateSpecialFood();
   }
 
-  // Change snake skin every 5 levels
   if (level % 5 === 0) {
-    snakeSkin = level % 10 === 0 ? "rainbow" : "golden"; // Alternate skins
+    snakeSkin = level % 10 === 0 ? "rainbow" : "golden";
   }
 }
 
-function resetSnake() {
-  snake = [{ x: 300, y: 300 }];
-  direction = { x: 0, y: 0 };
-  nextDirection = { x: 0, y: 0 };
+// =======================================
+// ********** LIFE LOSS & REPOSITION ******
+// =======================================
+function handleLifeLoss() {
+  lives--;
+  updateLivesDisplay();
+
+  if (lives > 0) {
+    showLifeModal();
+  } else {
+    showGameOverModal();
+  }
 }
 
 /**
- * MODAL AND UI FUNCTIONS
- * - Show/hide life lost and game over modals
- * - Update displayed stats
+ * Reposition the snake at a guaranteed safe location.
+ * We'll place the snake horizontally at y=0, starting around x=300 and going left.
+ * We remove obstacles that might occupy that space.
  */
+function repositionSnake() {
+  const headY = 0;
+  const headX = 300; 
+
+  // Compute the snake positions in a straight line going left from (300,0)
+  const snakePositions = [];
+  for (let i = 0; i < snake.length; i++) {
+    snakePositions.push({ x: headX - i * GRID_SIZE, y: headY });
+  }
+
+  // Remove obstacles on that line
+  obstacles = obstacles.filter(ob => {
+    return !snakePositions.some(sp => sp.x === ob.x && sp.y === ob.y);
+  });
+
+  // Place snake segments
+  for (let i = 0; i < snake.length; i++) {
+    snake[i].x = headX - i * GRID_SIZE;
+    snake[i].y = headY;
+  }
+
+  // Stop all movement until player chooses direction
+  direction = { x: 0, y: 0 };
+  nextDirection = { x: 0, y: 0 };
+  justRespawned = true;
+}
+
+// =======================================
+// *************** MODAL & UI *************
+// =======================================
 function showGameOverModal() {
   isModalOpen = true;
   highScore = Math.max(highScore, score);
@@ -221,19 +248,10 @@ function showGameOverModal() {
 }
 
 restartButton.addEventListener("click", () => {
-  score = 0;
-  level = 1;
-  lives = 3;
-  speed = 150;
-  obstacles = [];
-  specialFood = null;
-  snake = [{ x: 300, y: 300 }];
-  direction = { x: 0, y: 0 };
-  nextDirection = { x: 0, y: 0 };
-  updateLivesDisplay();
+  resetGame();
   gameOverModal.style.display = "none";
   isModalOpen = false;
-  isPaused = false; // Ensure game is not paused
+  isPaused = false;
   gameLoop();
 });
 
@@ -246,6 +264,9 @@ function showLifeModal() {
 resumeButton.addEventListener("click", () => {
   lifeModal.style.display = "none";
   isModalOpen = false;
+
+  repositionSnake(); 
+  // After repositioning, we do not move, justRespawned = true so no collision checks next frame.
   gameLoop();
 });
 
@@ -253,10 +274,23 @@ function updateLivesDisplay() {
   livesDisplay.textContent = `Lives: ${"❤️".repeat(lives)}${"💔".repeat(3 - lives)}`;
 }
 
-/**
- * DRAWING FUNCTIONS
- * - Render snake, food, obstacles, and stats on the canvas
- */
+function resetGame() {
+  score = 0;
+  level = 1;
+  lives = 3;
+  speed = 150;
+  obstacles = [];
+  specialFood = null;
+  snake = [{ x: 300, y: 300 }];
+  direction = { x: 0, y: 0 };
+  nextDirection = { x: 0, y: 0 };
+  justRespawned = false;
+  updateLivesDisplay();
+}
+
+// =======================================
+// ************ DRAW FUNCTIONS ************
+// =======================================
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -267,45 +301,42 @@ function draw() {
   });
 
   // Draw the snake
-  ctx.fillStyle = snakeSkin === "golden" ? "#FFD700" : snakeSkin === "rainbow" ? "#FF4500" : "#39ff14";
+  ctx.fillStyle = snakeSkin === "golden" ? "#FFD700"
+                : snakeSkin === "rainbow" ? "#FF4500"
+                : "#39ff14";
   snake.forEach(segment => {
     ctx.fillRect(segment.x, segment.y, GRID_SIZE, GRID_SIZE);
   });
 
-  // Draw food
+  // Draw normal food
   ctx.fillStyle = "#ff4500";
   ctx.fillRect(food.x, food.y, GRID_SIZE, GRID_SIZE);
 
-  // Draw special food
+  // Draw special food if present
   if (specialFood) {
     ctx.fillStyle = specialFood.color;
-    ctx.globalAlpha = 0.6 + 0.4 * Math.sin(Date.now() / 200); // Flashing effect
+    ctx.globalAlpha = 0.6 + 0.4 * Math.sin(Date.now() / 200);
     ctx.fillRect(specialFood.x, specialFood.y, GRID_SIZE, GRID_SIZE);
-    ctx.globalAlpha = 1.0; // Reset alpha
+    ctx.globalAlpha = 1.0;
   }
 
-  // Display stats
   scoreDisplay.textContent = `Score: ${score}`;
   levelDisplay.textContent = `Level: ${level}`;
   highScoreDisplay.textContent = `High Score: ${highScore}`;
 }
 
-/**
- * PAUSED SCREEN DRAWING
- */
 function drawPaused() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.7)"; // Dim the background
+  ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#FFD700"; // Retro-style yellow text
-  ctx.font = "bold 48px 'Press Start 2P', sans-serif"; // Retro font
+  ctx.fillStyle = "#FFD700";
+  ctx.font = "bold 48px 'Press Start 2P', sans-serif";
   ctx.textAlign = "center";
   ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
 }
 
-/**
- * EVENT LISTENERS
- * - Handle keyboard input for snake movement
- */
+// =======================================
+// ********** EVENT LISTENERS *************
+// =======================================
 document.addEventListener("keydown", event => {
   switch (event.key) {
     case "ArrowUp":
@@ -321,22 +352,12 @@ document.addEventListener("keydown", event => {
       if (direction.x === 0) nextDirection = { x: 1, y: 0 };
       break;
     case " ":
-      // Spacebar to toggle pause/play
-      if (isPaused) {
-        isPaused = false;
-        pausePlayButton.textContent = "Pause";
-        gameLoop();
-      } else {
-        isPaused = true;
-        pausePlayButton.textContent = "Play";
-      }
+      togglePause();
       break;
   }
 });
 
-/**
- * TOUCH CONTROLS FOR MOBILE DEVICES
- */
+// Touch controls for mobile
 let touchStartX = 0;
 let touchStartY = 0;
 
@@ -347,60 +368,58 @@ document.addEventListener("touchstart", event => {
 });
 
 document.addEventListener("touchmove", event => {
-  if (event.touches.length > 1) return; // Ignore multi-touch
+  if (event.touches.length > 1) return; 
   const touch = event.touches[0];
   const dx = touch.clientX - touchStartX;
   const dy = touch.clientY - touchStartY;
 
   if (Math.abs(dx) > Math.abs(dy)) {
-    // Horizontal swipe
-    if (dx > 0 && direction.x === 0) nextDirection = { x: 1, y: 0 }; // Right
-    if (dx < 0 && direction.x === 0) nextDirection = { x: -1, y: 0 }; // Left
+    if (dx > 0 && direction.x === 0) nextDirection = { x: 1, y: 0 };
+    if (dx < 0 && direction.x === 0) nextDirection = { x: -1, y: 0 };
   } else {
-    // Vertical swipe
-    if (dy > 0 && direction.y === 0) nextDirection = { x: 0, y: 1 }; // Down
-    if (dy < 0 && direction.y === 0) nextDirection = { x: 0, y: -1 }; // Up
+    if (dy > 0 && direction.y === 0) nextDirection = { x: 0, y: 1 };
+    if (dy < 0 && direction.y === 0) nextDirection = { x: 0, y: -1 };
   }
 
-  touchStartX = touch.clientX; // Reset for next swipe
+  touchStartX = touch.clientX;
   touchStartY = touch.clientY;
 });
 
-/**
- * PAUSE/PLAY LOGIC
- */
-pausePlayButton.addEventListener("click", () => {
-  if (isPaused) {
-    isPaused = false; // Resume the game
-    pausePlayButton.textContent = "Pause"; // Change button to Pause
-    gameLoop();
-  } else {
-    isPaused = true; // Pause the game
-    pausePlayButton.textContent = "Play"; // Change button to Play
-  }
-});
+// Pause/Play button
+pausePlayButton.addEventListener("click", togglePause);
 
-/**
- * DYNAMIC CANVAS HEIGHT FOR SMALL SCREENS
- */
-function adjustCanvasHeight() {
-  if (window.innerWidth <= 768) {
-    canvas.height = window.innerHeight * 1.2; // Set to 90% of viewport height
+function togglePause() {
+  if (isPaused) {
+    isPaused = false;
+    pausePlayButton.textContent = "Pause";
+    if (!isModalOpen && lives > 0) {
+      gameLoop();
+    }
   } else {
-    canvas.height = 600; // Default height for larger screens
+    isPaused = true;
+    pausePlayButton.textContent = "Play";
+    drawPaused();
   }
 }
 
-// Adjust canvas height on window resize
+// =======================================
+// ********** RESPONSIVE CANVAS ***********
+// =======================================
+function adjustCanvasHeight() {
+  if (window.innerWidth <= 768) {
+    canvas.height = window.innerHeight * 1.2; 
+  } else {
+    canvas.height = 600;
+  }
+}
+
 window.addEventListener("resize", adjustCanvasHeight);
 
-/**
- * START GAME
- * - Initialize game state and start the game loop
- */
-resetSnake();
-updateLivesDisplay();
+// =======================================
+// ************ START THE GAME ************
+// =======================================
 gameLoop();
+
 
 
 
