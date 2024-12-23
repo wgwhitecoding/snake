@@ -1,18 +1,56 @@
-/* General Styling */
-body {
-    font-family: 'Orbitron', sans-serif;
-    text-align: center;
-    background-color: #0d1117;
-    color: #58a6ff;
+/* RESET / BASE STYLES */
+html, body {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100vh;
+    /* Hides the scrollbars on mobile, so the game won't overflow. */
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    background-color: #0d1117;
+    color: #58a6ff;
 }
 
+/* "Rotate device" message - hidden by default */
+#rotateDeviceMessage {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #ffffff;
+  z-index: 9999;
+  justify-content: center; 
+  align-items: center;
+  text-align: center;
+}
+
+/* Show the rotate message only in portrait orientation */
+@media screen and (orientation: portrait) {
+  #rotateDeviceMessage {
+    display: flex;
+  }
+  /* Hide the game container and any other elements in portrait mode */
+  .game-container,
+  h1,
+  p {
+    display: none;
+  }
+}
+
+/* Show the game container in landscape */
+@media screen and (orientation: landscape) {
+  .game-container,
+  h1,
+  p {
+    display: block;
+  }
+  #rotateDeviceMessage {
+    display: none;
+  }
+}
+
+/* Title & Subheading */
 h1 {
+    text-align: center;
     font-size: 2.5em;
     color: #39ff14;
     text-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14;
@@ -20,44 +58,62 @@ h1 {
 }
 
 p {
+    text-align: center;
     font-size: 1.2em;
     margin: 10px 0;
     color: #ffffff;
 }
 
-.stats {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    color: #ffffff;
-    flex-wrap: wrap; /* Ensures stats wrap on small screens */
-}
-
+/* Game Container */
 .game-container {
-    height: 70vh; /* Default height for desktops and larger screens */
+    /* Fill the entire viewport to achieve full-screen effect */
+    width: 100vw;
+    height: 100vh;
+    position: relative; /* so we can absolutely position child elements */
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 100%; /* Ensure canvas does not overflow horizontally */
+    box-sizing: border-box;
 }
 
+/* Stats bar INSIDE the game container, near the top. */
+.stats {
+    position: absolute;
+    top: 10px; /* adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1em;
+    flex-wrap: wrap;
+    color: #ffffff;
+    z-index: 5; /* ensure it’s above the canvas */
+}
+
+/* The Canvas */
 canvas {
     border: 2px solid #39ff14;
     background-color: #121212;
     box-shadow: 0 0 20px #39ff14, 0 0 40px #39ff14;
-    max-width: 100%;
+    /* Make sure it scales properly. If you do not want distortion, remove width:100% */
+    width: 100%;
     height: auto;
+    max-width: 800px; /* or some limit you prefer */
+    max-height: 600px; /* ensure it’s not massive on big screens */
 }
 
 /* Pause/Play button styling */
 #pausePlayButton {
-    margin: 20px auto 0;
+    position: absolute;
+    top: 10px; 
+    right: 10px; 
     background-color: #2b2b2b;
     color: #00ff00;
     font-size: 1em;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border: 2px solid #00ff00;
     border-radius: 5px;
     cursor: pointer;
@@ -65,6 +121,7 @@ canvas {
     text-transform: uppercase;
     font-family: 'Press Start 2P', sans-serif;
     transition: transform 0.2s, background-color 0.3s;
+    z-index: 6; /* above the stats bar */
 }
 
 #pausePlayButton:hover {
@@ -80,8 +137,7 @@ canvas {
 .modal {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
@@ -148,51 +204,36 @@ canvas {
     50% { opacity: 0.3; }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2em;
-    }
+/* ================================================
+   Additional Example for Responsive Sizing
+   ================================================ */
 
-    p {
-        font-size: 1em;
-    }
-
-    .stats {
-        font-size: 0.9em;
-    }
-
-    .game-container {
-        height: 190vh !important; /* Increased height for small screens */
-    }
-
-    #pausePlayButton {
-        font-size: 0.9em;
-        padding: 8px 16px;
-    }
-}
-
+/* Larger Tablets Landscape (width between 768px and 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
-    .game-container {
-        height: 100vh; /* Slightly larger height for tablets */
-    }
+  #pausePlayButton {
+    top: 20px;
+    right: 20px;
+    font-size: 1.1em;
+  }
 }
 
-  @media (max-width: 768px) {
-    #pausePlayButton {
-      position: absolute;
-      top: 705px; /* Move higher for small screens */
-      left: 150px;
-    }
+/* Small Phones (max-width: 767px) in LANDSCAPE */
+@media (max-width: 767px) and (orientation: landscape) {
+  #pausePlayButton {
+    font-size: 0.8em;
+    padding: 6px 10px;
+    top: 10px;
+    right: 10px;
   }
-  
-  @media (min-width: 768px) and (max-width: 1024px) {
-    #pausePlayButton {
-        position: absolute;
-        top: 1075px; /* Move higher for small screens */
-        left: 460px;
-    }
+  .stats {
+    top: 10px;
+    left: 50%;
+    font-size: 0.9em;
+    padding: 6px 10px;
   }
+}
+
+
 
 
 
