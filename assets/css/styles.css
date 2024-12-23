@@ -175,7 +175,7 @@ canvas {
     /* 3) Make .game-container fill entire mobile screen */
     .game-container {
       width: 100vw !important;
-      height: 100vh !important;
+      height: 110vh !important;
       margin: 0 !important;
       padding: 0 !important;
       display: flex !important;
@@ -200,7 +200,7 @@ canvas {
     /* 5) Pause button pinned top-right, smaller font/padding */
     #pausePlayButton {
       position: absolute !important;
-      top: 5px;
+      top: 150px !important;
       right: 135px;
       font-size: 0.9em !important;
       padding: 4px 8px !important;
