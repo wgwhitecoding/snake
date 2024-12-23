@@ -201,7 +201,7 @@ canvas {
     #pausePlayButton {
       position: absolute !important;
       top: 150px !important;
-      right: 135px;
+      right: 150px;
       font-size: 0.9em !important;
       padding: 4px 8px !important;
       margin: 0 !important; 
@@ -219,17 +219,7 @@ canvas {
     }
 }
 
-/* 
-   The absolute position for pause button 
-   on small screens or tablets
-*/
-@media (max-width: 768px) {
-    #pausePlayButton {
-      position: absolute;
-      top: 705px; /* Move higher for small screens */
-      left: 150px;
-    }
-}
+
 
 @media (min-width: 768px) and (max-width: 1024px) {
     #pausePlayButton {
