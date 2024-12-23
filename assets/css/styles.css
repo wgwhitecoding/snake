@@ -191,7 +191,7 @@ canvas {
   
     #pausePlayButton {
       position: absolute !important;
-      top: 135px !important;
+      top: 120px !important;
       right: 155px;
       font-size: 0.9em !important;
       padding: 4px 8px !important;
