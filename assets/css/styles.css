@@ -156,33 +156,59 @@ canvas {
 /* ==============
    MOBILE PHONES
    ============== */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2em;
-    }
+   @media (max-width: 768px) {
 
-    p {
-        font-size: 1em;
+    /* 1) Hide title & paragraph on mobile to maximize screen space */
+    h1, p {
+      display: none !important;
     }
-
-    .stats {
-        font-size: 0.9em;
+  
+    /* 2) Remove body/html scrollbars, margins, paddings */
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      width: 100vw !important;
+      height: 100vh !important;
     }
-
-    /* 
-       REPLACE the old "height: 190vh" with a smaller height 
-       and hide overflow so there's no scrolling
-    */
+  
+    /* 3) Make .game-container fill entire mobile screen */
     .game-container {
-        height: 80vh !important; 
-        overflow: hidden !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      justify-content: center;
+      align-items: center;
+      /* position: relative or fixed if you want to absolutely position stats/pause */
+      position: relative !important; 
     }
-
+  
+    /* 4) If you want stats pinned top-left in smaller font, no push-down effect */
+    .stats {
+      position: absolute !important;
+      top: 5px; 
+      left: 5px;
+      font-size: 0.9em !important; 
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px 8px;
+      border-radius: 5px;
+      z-index: 10 !important;
+    }
+  
+    /* 5) Pause button pinned top-right, smaller font/padding */
     #pausePlayButton {
-        font-size: 0.9em;
-        padding: 8px 16px;
+      position: absolute !important;
+      top: 5px;
+      right: 135px;
+      font-size: 0.9em !important;
+      padding: 4px 8px !important;
+      margin: 0 !important; 
+      z-index: 10 !important;
     }
-}
+  }
+  
 
 /* ===============================
    TABLETS (768px to 1024px)
