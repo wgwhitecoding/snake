@@ -1,5 +1,8 @@
-/* General Styling */
-body {
+/* ======================================
+   ORIGINAL STYLES (unchanged at the top)
+   ====================================== */
+
+   body {
     font-family: 'Orbitron', sans-serif;
     text-align: center;
     background-color: #0d1117;
@@ -149,6 +152,10 @@ canvas {
 }
 
 /* Responsive Design */
+
+/* ==============
+   MOBILE PHONES
+   ============== */
 @media (max-width: 768px) {
     h1 {
         font-size: 2em;
@@ -162,8 +169,13 @@ canvas {
         font-size: 0.9em;
     }
 
+    /* 
+       REPLACE the old "height: 190vh" with a smaller height 
+       and hide overflow so there's no scrolling
+    */
     .game-container {
-        height: 190vh !important; /* Increased height for small screens */
+        height: 80vh !important; 
+        overflow: hidden !important;
     }
 
     #pausePlayButton {
@@ -172,27 +184,35 @@ canvas {
     }
 }
 
+/* ===============================
+   TABLETS (768px to 1024px)
+   =============================== */
 @media (min-width: 768px) and (max-width: 1024px) {
     .game-container {
         height: 100vh; /* Slightly larger height for tablets */
     }
 }
 
-  @media (max-width: 768px) {
+/* 
+   The absolute position for pause button 
+   on small screens or tablets
+*/
+@media (max-width: 768px) {
     #pausePlayButton {
       position: absolute;
       top: 705px; /* Move higher for small screens */
       left: 150px;
     }
-  }
-  
-  @media (min-width: 768px) and (max-width: 1024px) {
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
     #pausePlayButton {
         position: absolute;
-        top: 1075px; /* Move higher for small screens */
+        top: 1075px; /* Move higher for tablets */
         left: 460px;
     }
-  }
+}
+
 
 
 
