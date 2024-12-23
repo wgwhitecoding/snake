@@ -1,57 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Futuristic Snake Game</title>
-  <link rel="stylesheet" href="assets/css/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Snake Game</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-  <h1>Glow Snake Game</h1>
-  <p>Control the snake with the arrow keys. What's your highest score?</p>
-
-  <!-- This message appears when in portrait orientation (see CSS below). -->
-  <div id="rotateDeviceMessage">
-    <p>Please rotate your device to landscape mode.</p>
-  </div>
-
-  <div class="game-container">
-    <!-- Stats bar is now inside the container -->
+    <h1>Glow Snake Game</h1>
+    <p>Control the snake with the arrow keys. Whats your highest score</p>
     <div class="stats">
-      <span id="scoreDisplay">Score: 0</span>
-      <span id="levelDisplay">Level: 1</span>
-      <span id="livesDisplay">Lives: ❤️❤️❤️</span>
-      <span id="highScoreDisplay">High Score: 0</span>
+        <span id="scoreDisplay">Score: 0</span>
+        <span id="levelDisplay">Level: 1</span>
+        <span id="livesDisplay">Lives: ❤️❤️❤️</span>
+        <span id="highScoreDisplay">High Score: 0</span>
+    </div>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
-
-    <!-- Pause/Play Button (anchored in the corner for mobile/tablet) -->
-    <button id="pausePlayButton">Pause</button>
-  </div>
-
-  <!-- Modal for Losing Life -->
-  <div id="lifeModal" class="modal">
-    <div class="modal-content">
-      <h2 id="lifeModalTitle">Oh no! You lost a life!</h2>
-      <p id="remainingLives">Lives: ❤️❤️❤️</p>
-      <button id="resumeButton">Resume Game</button>
+    <!-- Pause/Play Button -->
+    <div class="controls">
+        <button id="pausePlayButton">Pause</button>
     </div>
-  </div>
 
-  <!-- Modal for Game Over -->
-  <div id="gameOverModal" class="modal">
-    <div class="modal-content">
-      <h2 id="gameOverTitle">Game Over!</h2>
-      <p id="finalLives">Lives: 💔💔💔</p>
-      <button id="restartButton">Restart Game</button>
+    <!-- Modal for Losing Life -->
+    <div id="lifeModal" class="modal">
+        <div class="modal-content">
+            <h2 id="lifeModalTitle">Oh no! You lost a life!</h2>
+            <p id="remainingLives">Lives: ❤️❤️❤️</p>
+            <button id="resumeButton">Resume Game</button>
+        </div>
     </div>
-  </div>
 
-  <script src="assets/js/script.js"></script>
+    <!-- Modal for Game Over -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2 id="gameOverTitle">Game Over!</h2>
+            <p id="finalLives">Lives: 💔💔💔</p>
+            <button id="restartButton">Restart Game</button>
+        </div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
 </body>
 </html>
-
 
 
 
