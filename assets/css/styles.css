@@ -35,7 +35,7 @@ p {
     font-size: 1.2em;
     margin-bottom: 10px;
     color: #ffffff;
-    flex-wrap: wrap; /* Ensures stats wrap on small screens */
+    flex-wrap: wrap; 
 }
 
 .game-container {
@@ -141,7 +141,6 @@ canvas {
     50% { opacity: 0.2; }
 }
 
-/* Flashing Snake during Grace Period */
 .snake-flash {
     animation: snakeFlash 0.5s ease-in-out infinite;
 }
@@ -151,19 +150,14 @@ canvas {
     50% { opacity: 0.3; }
 }
 
-/* Responsive Design */
-
 /* ==============
    MOBILE PHONES
    ============== */
    @media (max-width: 768px) {
-
-    /* 1) Hide title & paragraph on mobile to maximize screen space */
     h1, p {
       display: none !important;
     }
   
-    /* 2) Remove body/html scrollbars, margins, paddings */
     html, body {
       margin: 0 !important;
       padding: 0 !important;
@@ -172,20 +166,18 @@ canvas {
       height: 100vh !important;
     }
   
-    /* 3) Make .game-container fill entire mobile screen */
     .game-container {
       width: 100vw !important;
-      height: 110vh !important;
+      height: 100vh !important;
       margin: 0 !important;
       padding: 0 !important;
       display: flex !important;
       justify-content: center;
       align-items: center;
-      /* position: relative or fixed if you want to absolutely position stats/pause */
       position: relative !important; 
     }
   
-    /* 4) If you want stats pinned top-left in smaller font, no push-down effect */
+   
     .stats {
       position: absolute !important;
       top: 5px; 
@@ -197,11 +189,10 @@ canvas {
       z-index: 10 !important;
     }
   
-    /* 5) Pause button pinned top-right, smaller font/padding */
     #pausePlayButton {
       position: absolute !important;
       top: 150px !important;
-      right: 150px;
+      right: 155px;
       font-size: 0.9em !important;
       padding: 4px 8px !important;
       margin: 0 !important; 
@@ -209,22 +200,19 @@ canvas {
     }
   }
   
-
 /* ===============================
    TABLETS (768px to 1024px)
    =============================== */
 @media (min-width: 768px) and (max-width: 1024px) {
     .game-container {
-        height: 100vh; /* Slightly larger height for tablets */
+        height: 100vh;
     }
 }
-
-
 
 @media (min-width: 768px) and (max-width: 1024px) {
     #pausePlayButton {
         position: absolute;
-        top: 1075px; /* Move higher for tablets */
+        top: 1075px;
         left: 460px;
     }
 }
